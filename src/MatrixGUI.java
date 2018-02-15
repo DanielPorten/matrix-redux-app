@@ -1,6 +1,7 @@
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
@@ -14,6 +15,7 @@ import javafx.stage.Stage;
 import java.util.ArrayList;
 import java.util.Observable;
 import java.util.Observer;
+import java.util.Scanner;
 
 public class MatrixGUI extends Application implements Observer{
 
@@ -24,6 +26,7 @@ public class MatrixGUI extends Application implements Observer{
     private BorderPane bpane;
     private GridPane matrixPane;
     private int dimension;
+    private Text message;
 
     public MatrixGUI(){
         Matrix matrix = new Matrix();
@@ -31,9 +34,38 @@ public class MatrixGUI extends Application implements Observer{
         this.controller = new MatrixController(matrix);
     }
 
+    private String intParsing(String d){
+        String returnVal = d;
+        if(Double.parseDouble(d) % 1 == 0){
+            Double j = Double.parseDouble(d);
+            returnVal = Integer.toString( j.intValue() );
+        }
+        return returnVal;
+    }
+
     @Override
     public void update(Observable o, Object arg) {
+        //testing
+        System.out.println(o);
 
+        String [] rows = o.toString().split("\n");
+        int counter = 0;
+        int valpos = 0;
+        for (String row : rows){
+            String[] vals = row.split(",");
+                while (counter < dimension && valpos < dimension+1) {
+                    for (Node field : matrixPane.getChildren()) {
+                        if (counter == matrixPane.getChildren().indexOf(field) % dimension) {
+                            TextField f = (TextField) (field);
+                            f.setText(intParsing(vals[valpos]));
+                            valpos++;
+                        }
+                    }
+                }
+                valpos = 0;
+                counter++;
+            }
+        message.setText(arg.toString());
     }
 
     private void switchScene(Scene switchTo){
@@ -44,13 +76,35 @@ public class MatrixGUI extends Application implements Observer{
     private void parseMatrix(){
         int counter=0;
         ArrayList<MatrixRow> rows = new ArrayList<>();
+        boolean invalid = false;
 
         while (counter < dimension){
             ArrayList<Double> vals = new ArrayList<>();
-            //hmm
-            //need to loop over all textfield in a row
-	    //im guessing all the fields are stored in a 1d array and just displayed in 2d??
+            for (Node field : matrixPane.getChildren()){
+                if (counter == matrixPane.getChildren().indexOf(field)%dimension){
+                    TextField f = (TextField)(field);
+
+                    try {
+                        vals.add(Double.parseDouble(f.getText()));
+                    }
+                    catch (NumberFormatException e){
+                        invalid = true;
+                    }
+                }
+            }
+
+            if(vals.size()!=(dimension+1)){
+                invalid = true;
+            }
+            if(!(invalid)) {
+                rows.add(new MatrixRow(vals, counter));
+                counter++;
+            }
+            else{
+                message.setText("Invalid Matrix.");
+            }
         }
+        controller.changeMatrix(rows);
     }
 
     private void startMatrix(TextField textField){
@@ -114,6 +168,9 @@ public class MatrixGUI extends Application implements Observer{
         bpane.setRight(buttonBox);
         buttonBox.setAlignment(Pos.BOTTOM_RIGHT);
 
+        message = new Text("Enter the coefficients of the matrix.");
+        bpane.setTop(message);
+
         this.primaryScene = new Scene(dimentryBox);
         this.secondaryScene = new Scene(bpane);
 
@@ -123,13 +180,5 @@ public class MatrixGUI extends Application implements Observer{
         primaryStage.show();
     }
 
-    //TODO: Solve button: runs newMatrix with input from text field
-    //TODO: Display dimension^2# of fields for variable coeff. assignment
-    //TODO: other app startup requirements
-    //TODO: ability to go back and change dimension
     //TODO: Update
-
-    //String [] rows = o.tostring().split("\n");
-    //for (String row : rows){
-    //parse vals and place into fields...
 }
