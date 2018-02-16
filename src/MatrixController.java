@@ -7,7 +7,12 @@ public class MatrixController {
         this.matrix = m;
     }
 
-    public void changeMatrix(ArrayList<MatrixRow> rows){
+    public void forceIdentity(ArrayList<MatrixRow> rows){
+        matrix.changeRows(rows);
+        matrix.makeIdentity();
+    }
+
+    public void solveMatrix(ArrayList<MatrixRow> rows){
         matrix.changeRows(rows);
         matrix.solveMatrix();
     }

@@ -19,6 +19,10 @@ import java.util.Scanner;
 
 public class MatrixGUI extends Application implements Observer{
 
+    private enum parseStates{
+        SOLVE, IDENTITY, ZERO;
+    }
+
     private MatrixController controller;
     private Stage primaryStage;
     private Scene primaryScene;
@@ -73,7 +77,7 @@ public class MatrixGUI extends Application implements Observer{
         primaryStage.show();
     }
 
-    private void parseMatrix(){
+    private void parseMatrix(parseStates state){
         int counter=0;
         ArrayList<MatrixRow> rows = new ArrayList<>();
         boolean invalid = false;
@@ -104,7 +108,12 @@ public class MatrixGUI extends Application implements Observer{
                 message.setText("Invalid Matrix.");
             }
         }
-        controller.changeMatrix(rows);
+        switch (state){
+            case SOLVE:
+                controller.solveMatrix(rows);
+            case IDENTITY:
+                controller.forceIdentity(rows);
+        }
     }
 
     private void startMatrix(TextField textField){
@@ -128,7 +137,7 @@ public class MatrixGUI extends Application implements Observer{
 
         for (int i = 0; i <= dimension; i++){
             for (int j = 0; j < dimension; j++){
-                matrixPane.add(new TextField(),i,j);
+                matrixPane.add(new TextField("0"),i,j);
                 // make it so that i can add hboxes with label and field
             }
         }
@@ -146,34 +155,47 @@ public class MatrixGUI extends Application implements Observer{
 
         this.primaryStage = primaryStage;
 
-        VBox dimentryBox = new VBox();
-        Text dimText = new Text("Enter the number of variables in your linear system:");
-        TextField dimField = new TextField();
-        dimField.setOnAction((ActionEvent event) -> startMatrix(dimField));
-        dimentryBox.getChildren().addAll(dimText,dimField);
-
-        bpane = new BorderPane();
-
-        HBox buttonBox = new HBox();
+        /*
+        Creates Matrix Panel
+         */
 
         Button solveButton = new Button("Solve");
         solveButton.setPrefWidth(50);
-        solveButton.setOnAction(( ActionEvent event ) -> parseMatrix());
+        solveButton.setOnAction(( ActionEvent event ) -> parseMatrix(parseStates.SOLVE));
 
         Button backButton = new Button("Back");
         backButton.setPrefWidth(50);
         backButton.setOnAction(( ActionEvent event ) -> switchScene(primaryScene));
 
-        buttonBox.getChildren().addAll(solveButton,backButton);
-        bpane.setRight(buttonBox);
-        buttonBox.setAlignment(Pos.BOTTOM_RIGHT);
+        Button identButton = new Button("Identity Matrix");
+        identButton.setOnAction(( ActionEvent event ) -> parseMatrix(parseStates.IDENTITY));
 
         message = new Text("Enter the coefficients of the matrix.");
-        bpane.setTop(message);
 
-        this.primaryScene = new Scene(dimentryBox);
+        HBox buttonBox = new HBox();
+        buttonBox.getChildren().addAll(solveButton,backButton,identButton);
+        buttonBox.setSpacing(5.0);
+        buttonBox.setAlignment(Pos.BOTTOM_RIGHT);
+
+        bpane = new BorderPane();
+        bpane.setRight(buttonBox);
+
+        bpane.setTop(message);
         this.secondaryScene = new Scene(bpane);
 
+        /*
+        Creates Dimension Input
+         */
+
+        Text dimText = new Text("Enter the number of variables in your linear system:");
+
+        TextField dimField = new TextField();
+        dimField.setOnAction((ActionEvent event) -> startMatrix(dimField));
+
+        VBox dimentryBox = new VBox();
+        dimentryBox.getChildren().addAll(dimText,dimField);
+
+        this.primaryScene = new Scene(dimentryBox);
         primaryStage.setScene(primaryScene);
         primaryStage.setTitle("LAMR");
         primaryStage.setResizable(false);

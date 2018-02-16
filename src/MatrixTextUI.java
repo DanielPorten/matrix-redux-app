@@ -79,8 +79,9 @@ public class MatrixTextUI implements Observer{
         //build rows
         System.out.println("");
 
-        controller.changeMatrix(rows);
+        //controller.changeMatrix(rows);
         //insert rows to controller
+        //TODO: Update to match identity forces
     }
 
     @Override

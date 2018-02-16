@@ -33,6 +33,22 @@ public class Matrix extends Observable {
         this.notifyObservers("");
     }
 
+    /**
+     * Forces a row into identity form
+     */
+    public void makeIdentity(){
+        for (MatrixRow i: rows){
+            if (i.getVals().get(i.getPosition()) != 1){
+                for (Double val : i.getVals()) {
+                    i.getVals().set(i.getVals().indexOf(val), 0.0);
+                }
+                    i.getVals().set(i.getPosition(),1.0);
+            }
+        }
+        System.out.println(this);
+        this.setChanged();
+        this.notifyObservers("");
+    }
 
     /**
      * Algorithmically attempt to solve a matrix.
