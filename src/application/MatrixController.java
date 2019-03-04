@@ -1,3 +1,8 @@
+package application;
+
+import model.Matrix;
+import model.MatrixRow;
+
 import java.util.ArrayList;
 
 public class MatrixController {

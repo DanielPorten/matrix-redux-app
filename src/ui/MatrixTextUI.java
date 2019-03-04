@@ -1,3 +1,9 @@
+package ui;
+
+import application.MatrixController;
+import model.Matrix;
+import model.MatrixRow;
+
 import java.util.ArrayList;
 import java.util.Observable;
 import java.util.Observer;
@@ -17,9 +23,9 @@ public class MatrixTextUI implements Observer{
         Scanner in = new Scanner(System.in);
         String line;
         int dimension = -1;
-        System.out.println("Welcome to MatrixTextUI.\n");
+        System.out.println("Welcome to ui.MatrixTextUI.\n");
         System.out.println("Current restrictions on the system are:");
-        System.out.println("Matrix must be square with one augmented column.");
+        System.out.println("model.Matrix must be square with one augmented column.");
         System.out.println("Enter the number of variables in your matrix system (Max. 6):");
 
         while (dimension == -1){
@@ -38,7 +44,7 @@ public class MatrixTextUI implements Observer{
         }
         //get matrix dimension
 
-        System.out.println("Matrix Size: "+ dimension+"x"+dimension);
+        System.out.println("model.Matrix Size: "+ dimension+"x"+dimension);
         System.out.println("Row Size: " + (dimension+1));
 
         int counter = 0;

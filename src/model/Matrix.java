@@ -1,8 +1,10 @@
+package model;
+
 import java.util.ArrayList;
 import java.util.Observable;
 
 /**
- * Matrix.java
+ * model.Matrix.java
  *
  * A class to represent a linear matrix.
  *
@@ -53,7 +55,7 @@ public class Matrix extends Observable {
     /**
      * Algorithmically attempt to solve a matrix.
      * Current Valid Matrices:
-     * Matrix is square augmented (nxn+1)
+     * model.Matrix is square augmented (nxn+1)
      */
     public void solveMatrix(){
         boolean inconsistent = false;
@@ -67,13 +69,7 @@ public class Matrix extends Observable {
                 for (MatrixRow j: rows){
                     if (j.getVals().get(i.getPosition()) != 0){
                         MatrixRow.swapPosition(i,j);
-
-                        //this could easily cause issues with the rows...
                         foundswap = true;
-                        //i = j; yeah that's definitely not right
-                        //rows.set(rows.indexOf(i),j);
-                        //rows.set(rows.indexOf(j),i);
-                        //none of that's nessecary i guess??????
                     }
                     if(foundswap){
                         break;

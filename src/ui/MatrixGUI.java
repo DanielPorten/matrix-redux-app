@@ -1,3 +1,6 @@
+package ui;
+
+import application.MatrixController;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.geometry.Pos;
@@ -11,11 +14,12 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import model.Matrix;
+import model.MatrixRow;
 
 import java.util.ArrayList;
 import java.util.Observable;
 import java.util.Observer;
-import java.util.Scanner;
 
 public class MatrixGUI extends Application implements Observer{
 
@@ -38,6 +42,12 @@ public class MatrixGUI extends Application implements Observer{
         this.controller = new MatrixController(matrix);
     }
 
+    /**
+     * Parses a double string value and truncates trailing zeroes for whole integers.
+     * @param d A string representation of a double.
+     * @return A string representation of a double, with trailing zeroes for whole integers removed.
+     * TODO: Round to three decimal places(?)
+     */
     private String intParsing(String d){
         String returnVal = d;
         if(Double.parseDouble(d) % 1 == 0){
@@ -55,6 +65,7 @@ public class MatrixGUI extends Application implements Observer{
         String [] rows = o.toString().split("\n");
         int counter = 0;
         int valpos = 0;
+        //creates xy coordinates to iterate through and print data to the screen.
         for (String row : rows){
             String[] vals = row.split(",");
                 while (counter < dimension && valpos < dimension+1) {
@@ -77,6 +88,10 @@ public class MatrixGUI extends Application implements Observer{
         primaryStage.show();
     }
 
+    /**
+     * Parses data from the model.Matrix GUI and passes it to the controller.
+     * @param state The desired follow-up operation.
+     */
     private void parseMatrix(parseStates state){
         int counter=0;
         ArrayList<MatrixRow> rows = new ArrayList<>();
@@ -87,27 +102,30 @@ public class MatrixGUI extends Application implements Observer{
             for (Node field : matrixPane.getChildren()){
                 if (counter == matrixPane.getChildren().indexOf(field)%dimension){
                     TextField f = (TextField)(field);
-
+                    //for each text field in the matrix pane that matches the counter, pull that number into the row.
                     try {
                         vals.add(Double.parseDouble(f.getText()));
                     }
+                    //If this isn't a number, ie, string, it's not a valid matrix.
                     catch (NumberFormatException e){
                         invalid = true;
                     }
                 }
             }
-
+            //If there are more values than the row can hold, it's an invalid matrix.
             if(vals.size()!=(dimension+1)){
                 invalid = true;
             }
+            //if the matrix is valid, add a row to the model and move to the next row.
             if(!(invalid)) {
                 rows.add(new MatrixRow(vals, counter));
                 counter++;
             }
             else{
-                message.setText("Invalid Matrix.");
+                message.setText("Invalid model.Matrix.");
             }
         }
+        //based on how the user entered this state, perform the next operation
         switch (state){
             case SOLVE:
                 controller.solveMatrix(rows);
@@ -156,7 +174,7 @@ public class MatrixGUI extends Application implements Observer{
         this.primaryStage = primaryStage;
 
         /*
-        Creates Matrix Panel
+        Creates model.Matrix Panel
          */
 
         Button solveButton = new Button("Solve");
@@ -201,6 +219,4 @@ public class MatrixGUI extends Application implements Observer{
         primaryStage.setResizable(false);
         primaryStage.show();
     }
-
-    //TODO: Update
 }

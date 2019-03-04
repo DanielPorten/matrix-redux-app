@@ -1,9 +1,11 @@
+package model;
+
 import java.util.ArrayList;
 
 /**
- * MatrixRow.java
+ * model.MatrixRow.java
  *
- * A class file to represent a single row in a linear Matrix.
+ * A class file to represent a single row in a linear model.Matrix.
  *
  */
 public class MatrixRow {

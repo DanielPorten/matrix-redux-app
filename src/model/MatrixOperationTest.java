@@ -1,6 +1,11 @@
+package model;
+
+import model.Matrix;
+import model.MatrixRow;
+
 import java.util.ArrayList;
 
-public class MatrixTest {
+public class MatrixOperationTest {
 
     private static void rowTest(){
         System.out.println("Now testing Row Functions:");
